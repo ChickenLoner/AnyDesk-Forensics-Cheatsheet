@@ -15,10 +15,10 @@ This cheat sheet was made alongside [Deep dive into AnyDesk Investigation & Fore
 |----|----|----|
 | Identify AnyDesk installation | Service installation (`AnyDesk Service`) | Look for `AnyDesk` service install in `System.evtx` (Event ID **7045**) |
 | | Service installation CLI | Look for `--install`, `--start-with-win` and `--silent` in `Sysmon` (Event ID **1**) or `Security.evtx` (Event ID **4688**) |
-| | Program files created | Look for `C:\Program Files (x86)\AnyDesk\` (default location, can be changed) but `AnyDesk.exe` will be there |
+| | Program files folder | Look for `C:\Program Files (x86)\AnyDesk\` (default location, can be changed) but `AnyDesk.exe` will be there |
 | | Services Registry | Look for `HKLM\SYSTEM\CurrentControlSet\Services\AnyDesk` registry key |
 | Determine execution without installation (portable) | AnyDesk binary execution | Look for `AnyDesk.exe` in `Sysmon` (Event ID **1**) and `Security.evtx` (Event ID **4688**) if binary is not renamed |
-| | File creation | Look for `gcaapi.dll` which should be located in the same folder as `AnyDesk.exe` or other suspicious binary which signed by `AnyDesk Software GmbH`
+| | `gcaapi.dll` File download | Look for `gcaapi.dll` which should be located in the same folder as `AnyDesk.exe` or other suspicious binary which signed by `AnyDesk Software GmbH`
 | | AnyDesk folder creation | `C:\Users\<username>\AppData\Roaming\AnyDesk` |
 | Identify AnyDesk ID (local system) | Local AnyDesk ID in configuration file | `ad.anynet.id` value in `service.conf` which are located in `C:\ProgramData\AnyDesk\` and `C:\Users\<username>\AppData\Roaming\AnyDesk\` |
 | | Local AnyDesk ID in AnyDesk log file | Look for `main - * Client ID` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
@@ -26,7 +26,7 @@ This cheat sheet was made alongside [Deep dive into AnyDesk Investigation & Fore
 | | Remote AnyDesk ID in AnyDesk log file | Look for `anynet.any_socket - Accept request from` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` | 
 | | | Look for `anynet.any_socket - Accepting from` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` | 
 | | | Look for `anynet.any_socket - Client-ID:` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` | 
-| Identify authentication method | Authentication type (`User`, `Passwd`, `Token`) | Look for `connection_trace.txt` file in `C:\ProgramData\AnyDesk\` or `C:\Users\<username>\AppData\Roaming\AnyDesk\`|
+| Identify authentication method | Authentication type (`User`, `Passwd`, `Token`) in connection log file | Look for `connection_trace.txt` file in `C:\ProgramData\AnyDesk\` or `C:\Users\<username>\AppData\Roaming\AnyDesk\`|
 | Identify connection timestamps | Session start time (UTC) | Look for `connection_trace.txt` file (format `YYYY-MM-DD HH:MM` in UTC) |
 | | | Look for `anynet.connection_mgr - Making a new connection to client` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
 | | | Look for `anynet.any_socket - Connect request accepted` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace`|
@@ -35,12 +35,12 @@ This cheat sheet was made alongside [Deep dive into AnyDesk Investigation & Fore
 | | | Look for `app.session - Session closed` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
 | Identify remote IP address | Incoming request and session establishment in AnyDesk Log File | Look for `anynet.punch_connector - -> Spawning:` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
 | | | Look for `Incoming connection.` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
-| Identify file transfer activity | File transfer events | Look for `file_transfer_trace.txt` file in `C:\ProgramData\AnyDesk\` and `C:\Users\<username>\AppData\Roaming\AnyDesk\` |
+| Identify file transfer activity | File transfer log file | Look for `file_transfer_trace.txt` file in `C:\ProgramData\AnyDesk\` and `C:\Users\<username>\AppData\Roaming\AnyDesk\` |
 | | Upload to local (appear as download) event in AnyDesk log file | Look for `app.local_file_transfer - Download` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
 | | Download from local (appear as upload) events in AnyDesk log file | Look for `app.prepare_task - Preparing files in` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` | 
 | | | Look for `app.local_file_transfer - Preparation of` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` | 
 | | Delete file from local via file manager events in AnyDesk log file | Look for `app.deleter` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` | 
-| Identify chat usage | Chat log file creation | Chat log is named after remote AnyDesk ID in `C:\Users\<username>\AppData\Roaming\AnyDesk\chat` folder |
+| Identify chat usage | Chat log file | Chat log is named after remote AnyDesk ID in `C:\Users\<username>\AppData\Roaming\AnyDesk\chat` folder |
 | Identify persistence via unattended access | Setup password for unattended access in command line | Look for `--set-password` as an argument in `Sysmon` (Event ID **1**) and `Security.evtx` (Event ID **4688**) |
 | | | Look for `--set-password` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` | 
 | | Unattended access events in AnyDesk log file | Look for `Authenticated with correct passphrase of profile '_unattended_access'` in `C:\Users\<username>\AppData\Roaming\AnyDesk\ad.trace` or `C:\ProgramData\AnyDesk\ad_svc.trace` |
